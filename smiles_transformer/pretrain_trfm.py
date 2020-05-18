@@ -96,7 +96,7 @@ def parse_arguments():
     parser.add_argument('--n_epoch', '-e', type=int, default=5, help='number of epochs')
     parser.add_argument('--vocab', '-v', type=str, default='data/vocab.pkl', help='vocabulary (.pkl)')
     parser.add_argument('--data', '-d', type=str, default='data/chembl_25.csv', help='train corpus (.csv)')
-    parser.add_argument('--out-dir', '-o', type=str, default='../result', help='output directory')
+    parser.add_argument('--out-dir', '-o', type=str, default='result', help='output directory')
     parser.add_argument('--name', '-n', type=str, default='ST', help='model name')
     parser.add_argument('--seq_len', type=int, default=220, help='maximum length of the paired seqence')
     parser.add_argument('--batch_size', '-b', type=int, default=8, help='batch size')

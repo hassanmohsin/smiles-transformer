@@ -5,41 +5,37 @@ from collections import Counter
 
 class TorchVocab(object):
     """
-    :property freqs: collections.Counter, コーパス中の単語の出現頻度を保持するオブジェクト
-    :property stoi: collections.defaultdict, string → id の対応を示す辞書
-    :property itos: collections.defaultdict, id → string の対応を示す辞書
+    :property freqs: collections.Counter
+    :property stoi: collections.defaultdict, string  id
+    :property itos: collections.defaultdict, id  string
     """
     def __init__(self, counter, max_size=None, min_freq=1, specials=['<pad>', '<oov>'],
                  vectors=None, unk_init=None, vectors_cache=None):
         """
-        :param counter: collections.Counter, データ中に含まれる単語の頻度を計測するためのcounter
-        :param max_size: int, vocabularyの最大のサイズ. Noneの場合は最大値なし. defaultはNone
-        :param min_freq: int, vocabulary中の単語の最低出現頻度. この数以下の出現回数の単語はvocabularyに加えられない.
-        :param specials: list of str, vocabularyにあらかじめ登録するtoken
-        :param vectors: list of vectors, 事前学習済みのベクトル. ex)Vocab.load_vectors
+        :param counter: collections.Counter
+        :param max_size: int, vocabulary
+        :param min_freq: int, vocabulary
+        :param specials: list of str, vocabulary
+        :param vectors: list of vectors, Vocab.load_vectors
         """
         self.freqs = counter
         counter = counter.copy()
         min_freq = max(min_freq, 1)
 
         self.itos = list(specials)
-        # special tokensの出現頻度はvocabulary作成の際にカウントされない
         for tok in specials:
             del counter[tok]
 
         max_size = None if max_size is None else max_size + len(self.itos)
 
-        # まず頻度でソートし、次に文字順で並び替える
         words_and_frequencies = sorted(counter.items(), key=lambda tup: tup[0])
         words_and_frequencies.sort(key=lambda tup: tup[1], reverse=True)
         
-        # 出現頻度がmin_freq未満のものはvocabに加えない
         for word, freq in words_and_frequencies:
             if freq < min_freq or len(self.itos) == max_size:
                 break
             self.itos.append(word)
 
-        # dictのk,vをいれかえてstoiを作成する
         self.stoi = {tok: i for i, tok in enumerate(self.itos)}
 
         self.vectors = None
@@ -82,11 +78,9 @@ class Vocab(TorchVocab):
         self.mask_index = 4
         super().__init__(counter, specials=["<pad>", "<unk>", "<eos>", "<sos>", "<mask>"], max_size=max_size, min_freq=min_freq)
 
-    # override用
     def to_seq(self, sentece, seq_len, with_eos=False, with_sos=False) -> list:
         pass
 
-    # override用
     def from_seq(self, seq, join=False, with_pad=False):
         pass
 
@@ -100,7 +94,6 @@ class Vocab(TorchVocab):
             pickle.dump(self, f)
 
 
-# テキストファイルからvocabを作成する
 class WordVocab(Vocab):
     def __init__(self, texts, max_size=None, min_freq=1):
         print("Building Vocab")

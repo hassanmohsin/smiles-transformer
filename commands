@@ -1,0 +1,7 @@
+
+# Build vocabulary
+python -m smiles_transformer.build_vocab -c data/chembl_24.csv
+
+
+# Train the network
+python -m smiles_transformer.pretrain_trfm --vocab data/vocab.pkl --data data/chembl_24.csv --out-dir output --gpu 0

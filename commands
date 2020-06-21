@@ -1,4 +1,4 @@
-
+# The paper used Chembl24 dataset (861,000 compounds)
 # Build vocabulary
 python -m smiles_transformer.build_vocab -c data/chembl_24.csv
 
